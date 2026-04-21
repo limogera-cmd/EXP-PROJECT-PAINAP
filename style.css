@@ -170,7 +170,7 @@ button { border:none; background:none; cursor:pointer; font-family:inherit; }
   border-top:1px solid rgba(232,163,46,.2);
 }
 .hero__stats-inner {
-  display:grid; grid-template-columns:repeat(4,1fr);
+  display:grid; grid-template-columns:repeat(3,1fr);
   divide : divide;
 }
 .hstat {
