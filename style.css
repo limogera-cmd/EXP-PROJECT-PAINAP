@@ -422,6 +422,52 @@ button { border:none; background:none; cursor:pointer; font-family:inherit; }
 @media(max-width:860px){ .proof__inner { grid-template-columns:1fr; gap:40px; } }
 
 /* ========================
+   TECNOLOGIA AI
+   ======================== */
+.tech {
+  padding:120px 0;
+  background:#140702;
+  border-bottom:1px solid rgba(232,163,46,.1);
+}
+.tech__inner {
+  display:grid; grid-template-columns:1fr 1fr;
+  align-items:center; gap:64px;
+}
+.tech__list { margin-top:40px; list-style:none; }
+.tech__list li {
+  font-size:1.05rem; color:var(--cream-2);
+  margin-bottom:20px; padding-left:28px;
+  position:relative;
+}
+.tech__list li span {
+  position:absolute; left:0; top:2px;
+  color:var(--gold); font-size:.9rem;
+}
+.tech__visual {
+  background:rgba(232,163,46,.03);
+  border:1px solid rgba(232,163,46,.1);
+  padding:48px 40px; border-radius:8px;
+  position:relative; overflow:hidden;
+}
+.tech__visual::before {
+  content:''; position:absolute; inset:0;
+  background-image:url('img/pattern.png');
+  background-size:200px; opacity:.05;
+  pointer-events:none;
+}
+.tech__hud {
+  font-family:monospace; color:var(--gold);
+  font-size:.9rem; letter-spacing:1px;
+  position:relative; z-index:2;
+}
+.hud-code { color:rgba(250,246,238,.45); margin-top:12px; }
+
+@media(max-width:900px){
+  .tech__inner { grid-template-columns:1fr; gap:40px; }
+  .tech { padding:80px 0; }
+}
+
+/* ========================
    CTA FINAL
    ======================== */
 .cta {
