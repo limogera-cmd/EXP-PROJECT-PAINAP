@@ -1,84 +1,91 @@
-/* ============================================
-   PAINAP — Scripts v2
+/* ===================================================
+   PAINAP — Scripts v3 (Redesign Final)
    Nav scroll, Reveal, Mobile Menu, Counters,
-   Phone mask, Form submit
-   ============================================ */
+   Form submit, Mask
+   =================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
   revealInit();
   navScroll();
   mobileMenu();
   counters();
-  phoneMask();
+  waMask();
   formSubmit();
   smoothScroll();
 });
 
 /* ------ Scroll Reveal ------ */
 function revealInit() {
-  const els = document.querySelectorAll('.r');
+  const els = document.querySelectorAll('.rv');
 
-  // Trigger hero elements immediately (above fold)
-  els.forEach(el => {
-    const rect = el.getBoundingClientRect();
-    if (rect.top < window.innerHeight) {
-      setTimeout(() => el.classList.add('on'), 80);
-    }
-  });
-
-  if (!('IntersectionObserver' in window)) {
-    els.forEach(el => el.classList.add('on'));
-    return;
-  }
-
-  const obs = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        e.target.classList.add('on');
-        obs.unobserve(e.target);
+  // Initial check
+  const check = () => {
+    els.forEach(el => {
+      const rect = el.getBoundingClientRect();
+      if (rect.top < window.innerHeight - 50) {
+        el.classList.add('on');
       }
     });
-  }, { threshold: 0.08, rootMargin: '0px 0px -32px 0px' });
+  };
 
-  els.forEach(el => {
-    if (!el.classList.contains('on')) obs.observe(el);
-  });
+  check();
+  window.addEventListener('scroll', check, { passive: true });
+
+  // Use Observer for performance if available
+  if ('IntersectionObserver' in window) {
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('on');
+          obs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    els.forEach(el => obs.observe(el));
+  }
 }
 
 /* ------ Sticky Nav ------ */
 function navScroll() {
   const nav = document.getElementById('nav');
-  window.addEventListener('scroll', () => {
+  if (!nav) return;
+  
+  const handler = () => {
     nav.classList.toggle('scrolled', window.pageYOffset > 50);
-  }, { passive: true });
+  };
+  
+  window.addEventListener('scroll', handler, { passive: true });
+  handler();
 }
 
 /* ------ Mobile Menu ------ */
 function mobileMenu() {
   const burger = document.getElementById('burger');
-  const menu   = document.getElementById('mob-menu');
+  const mob    = document.getElementById('mob');
   const close  = document.getElementById('mob-close');
-  const links  = menu.querySelectorAll('[data-ml]');
+  const links  = document.querySelectorAll('[data-ml]');
 
-  if (!burger) return;
+  if (!burger || !mob) return;
 
   burger.addEventListener('click', () => {
-    menu.classList.add('open');
+    mob.classList.add('open');
     document.body.style.overflow = 'hidden';
   });
 
-  function closeMob() {
-    menu.classList.remove('open');
+  const closeMob = () => {
+    mob.classList.remove('open');
     document.body.style.overflow = '';
-  }
+  };
 
-  close.addEventListener('click', closeMob);
+  if (close) close.addEventListener('click', closeMob);
   links.forEach(l => l.addEventListener('click', closeMob));
 }
 
 /* ------ Counter Animation ------ */
 function counters() {
   const items = document.querySelectorAll('[data-count]');
+  if (!items.length) return;
 
   const obs = new IntersectionObserver((entries) => {
     entries.forEach(e => {
@@ -87,28 +94,36 @@ function counters() {
         obs.unobserve(e.target);
       }
     });
-  }, { threshold: 0.6 });
+  }, { threshold: 0.1 });
 
   items.forEach(el => obs.observe(el));
 }
 
 function animCount(el) {
-  const target = parseInt(el.getAttribute('data-count'));
-  const prefix = el.textContent.trim().startsWith('-') ? '-' : '+';
-  const duration = 1800;
+  const raw = el.getAttribute('data-count');
+  const target = parseInt(raw.replace(/\D/g, ''));
+  const prefix = raw.includes('+') ? '+' : (raw.includes('-') ? '-' : '');
+  const suffix = raw.includes('%') ? '%' : '';
+  
+  const duration = 2000;
   const start = performance.now();
 
-  (function update(now) {
+  const update = (now) => {
     const p = Math.min((now - start) / duration, 1);
-    const eased = 1 - Math.pow(1 - p, 3);
-    el.textContent = prefix + Math.floor(eased * target);
+    const eased = 1 - Math.pow(1 - p, 4); // Quart ease out
+    const current = Math.floor(eased * target);
+    
+    el.textContent = prefix + current + suffix;
+    
     if (p < 1) requestAnimationFrame(update);
-  })(start);
+  };
+  
+  requestAnimationFrame(update);
 }
 
-/* ------ Phone Mask ------ */
-function phoneMask() {
-  const input = document.getElementById('whatsapp');
+/* ------ WA Mask ------ */
+function waMask() {
+  const input = document.getElementById('wa');
   if (!input) return;
 
   input.addEventListener('input', e => {
@@ -125,20 +140,23 @@ function smoothScroll() {
   document.querySelectorAll('a[href^="#"]').forEach(a => {
     a.addEventListener('click', e => {
       const id = a.getAttribute('href');
-      if (id === '#') return;
+      if (id === '#' || !id.startsWith('#')) return;
       const target = document.querySelector(id);
       if (!target) return;
+      
       e.preventDefault();
-      const offset = document.getElementById('nav').offsetHeight + 16;
-      window.scrollTo({ top: target.getBoundingClientRect().top + window.pageYOffset - offset, behavior: 'smooth' });
+      const offset = (document.getElementById('nav')?.offsetHeight || 80) + 20;
+      const targetPos = target.getBoundingClientRect().top + window.pageYOffset - offset;
+      
+      window.scrollTo({ top: targetPos, behavior: 'smooth' });
     });
   });
 }
 
 /* ------ Form Submit ------ */
 function formSubmit() {
-  const form = document.getElementById('contact-form');
-  const btn  = document.getElementById('form-submit');
+  const form = document.getElementById('cform');
+  const btn  = document.getElementById('fsubmit');
   if (!form || !btn) return;
 
   form.addEventListener('submit', e => {
@@ -147,17 +165,19 @@ function formSubmit() {
     btn.textContent = 'Enviando...';
     btn.disabled = true;
 
-    // Simulate async (replace with real API call)
+    // Simulate async
     setTimeout(() => {
-      btn.textContent = '✓ Solicitação enviada!';
+      btn.textContent = '✓ Diagnóstico Solicitado';
       btn.style.background = '#2C6644';
+      btn.style.color = '#fff';
 
       setTimeout(() => {
         form.reset();
         btn.textContent = orig;
         btn.disabled = false;
         btn.style.background = '';
-      }, 3500);
-    }, 1400);
+        btn.style.color = '';
+      }, 4000);
+    }, 1500);
   });
 }
