@@ -115,7 +115,7 @@ button { border:none; background:none; cursor:pointer; font-family:inherit; }
 }
 .hero__bg {
   position:absolute; inset:0;
-  background-image:url('img/hero-bg.jpg');
+  background-image:url('img/hero-seccao.png');
   background-size:cover; background-position:center;
   opacity:.28;
 }
