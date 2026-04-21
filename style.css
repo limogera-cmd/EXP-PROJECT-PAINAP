@@ -14,6 +14,10 @@
 @font-face { font-family:'LuxuryRigane'; src:url('fonts/LuxuryRigane-Semibold.ttf') format('truetype'); font-weight:600; font-display:swap; }
 @font-face { font-family:'LuxuryRigane'; src:url('fonts/LuxuryRigane-Bold.ttf') format('truetype'); font-weight:700; font-display:swap; }
 
+@font-face { font-family:'Mosvita'; src:url('fonts/mosvita.ttf') format('truetype'); font-weight:400; font-display:swap; }
+@font-face { font-family:'Mosvita'; src:url('fonts/mosvita-extrabold.otf') format('opentype'); font-weight:800; font-display:swap; }
+
+
 /* --- Tokens de Marca --- */
 :root {
   /* Paleta Real */
@@ -31,7 +35,7 @@
 
   /* Tipografia */
   --display:  'LuxuryRigane', serif;
-  --head:     'Arsenal', serif;
+  --head:     'Mosvita', sans-serif;
   --body:     'Arsenal', sans-serif;
 
   /* Motion */
@@ -117,24 +121,18 @@ button { border:none; background:none; cursor:pointer; font-family:inherit; }
   position:absolute; inset:0;
   background-image:url('img/hero-seccao.png');
   background-size:cover; background-position:center;
-  opacity:.28;
+  opacity:.18;
+}
+.hero::after {
+  content: ''; position: absolute; inset:0; z-index:1;
+  background-image:url('img/pattern.png');
+  background-size:200px; opacity:.08;
+  pointer-events:none; mix-blend-mode: soft-light;
 }
 /* Overlay gradiente para legibilidade */
 .hero__overlay {
   position:absolute; inset:0;
-  background:linear-gradient(135deg, rgba(59,26,7,.85) 0%, rgba(26,9,0,.6) 50%, rgba(59,26,7,.7) 100%);
-}
-/* Linha geométrica decorativa */
-.hero__geo {
-  position:absolute; top:0; right:0; bottom:0;
-  width:2px; background:var(--gold); opacity:.15;
-  margin-right:15%;
-}
-.hero__geo2 {
-  position:absolute; top:25%; right:15%;
-  width:160px; height:160px;
-  border:1.5px solid var(--gold); opacity:.08;
-  transform:rotate(45deg);
+  background:linear-gradient(135deg, rgba(59,26,7,.85) 0%, rgba(26,9,0,.65) 50%, rgba(59,26,7,.7) 100%);
 }
 
 .hero__content {
@@ -249,8 +247,8 @@ button { border:none; background:none; cursor:pointer; font-family:inherit; }
 .portfolio__hd h2 em { font-style:italic; color:var(--gold); }
 
 .portfolio__grid {
-  display:grid; grid-template-columns:repeat(3,1fr);
-  gap:16px;
+  display:grid; grid-template-columns:repeat(2,1fr);
+  gap:24px;
 }
 .pcard {
   position:relative; overflow:hidden; cursor:pointer;
